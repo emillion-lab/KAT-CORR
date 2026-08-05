@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="bg"><head><meta charset="UTF-8"><title>Fetch test</title>
+<style>body{background:#0b0d12;color:#e8ebf2;font-family:monospace;padding:20px;}
+.ok{color:#4fd18b}.err{color:#ff5f6d}div{margin-bottom:10px;padding:10px;background:#12151c;border-radius:8px;}</style>
+</head><body>
+<h2>Диагностика на fetch()</h2>
+<div id="kp">Kp (kp.gfz.de): чакане…</div>
+<div id="wx">Open-Meteo: чакане…</div>
+<script>
+(async()=>{
+  const kpEl = document.getElementById('kp');
+  try{
+    const r = await fetch('https://kp.gfz.de/app/json/?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z&index=Kp&status=def');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    kpEl.textContent = 'Kp (kp.gfz.de): OK — ' + JSON.stringify(j.Kp);
+    kpEl.className='ok';
+  }catch(e){
+    kpEl.textContent = 'Kp (kp.gfz.de): ГРЕШКА — ' + e.message;
+    kpEl.className='err';
+  }
+})();
+(async()=>{
+  const wxEl = document.getElementById('wx');
+  try{
+    const r = await fetch('https://archive-api.open-meteo.com/v1/archive?latitude=42.6975&longitude=23.3242&start_date=2024-01-01&end_date=2024-01-02&daily=temperature_2m_max&timezone=Europe%2FSofia');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    wxEl.textContent = 'Open-Meteo: OK — ' + JSON.stringify(j.daily);
+    wxEl.className='ok';
+  }catch(e){
+    wxEl.textContent = 'Open-Meteo: ГРЕШКА — ' + e.message;
+    wxEl.className='err';
+  }
+})();
+</script>
+</body></html>
