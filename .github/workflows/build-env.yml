@@ -1,0 +1,67 @@
+name: build-env-dataset
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-env.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Kp (GFZ) + Sofia weather (Open-Meteo) 2015-2025
+        run: |
+          python3 - <<'PYEOF'
+          import urllib.request, json, csv, datetime
+
+          def get(url):
+              req = urllib.request.Request(url, headers={'User-Agent':'Mozilla/5.0'})
+              return json.load(urllib.request.urlopen(req, timeout=120))
+
+          START, END = '2015-01-01', '2025-12-31'
+
+          # --- Kp, 3-hourly definitive ---
+          kp_url = f'https://kp.gfz.de/app/json/?start={START}T00:00:00Z&end={END}T21:00:00Z&index=Kp&status=def'
+          kj = get(kp_url)
+          daily = {}
+          for t, v in zip(kj['datetime'], kj['Kp']):
+              if v is None or v < 0: continue
+              d = t[:10]
+              e = daily.setdefault(d, [])
+              e.append(v)
+          kp = {d: (max(v), sum(v)/len(v)) for d, v in daily.items()}
+          print('kp days:', len(kp))
+
+          # --- Weather Sofia ---
+          wx_url = ('https://archive-api.open-meteo.com/v1/archive?latitude=42.6975&longitude=23.3242'
+                    f'&start_date={START}&end_date={END}'
+                    '&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,'
+                    'surface_pressure_mean,precipitation_sum,rain_sum,snowfall_sum,'
+                    'wind_speed_10m_max,wind_gusts_10m_max,sunshine_duration,daylight_duration'
+                    '&timezone=Europe%2FSofia')
+          wj = get(wx_url)
+          d = wj['daily']
+          print('wx days:', len(d['time']))
+
+          cols = ['temperature_2m_max','temperature_2m_min','temperature_2m_mean',
+                  'surface_pressure_mean','precipitation_sum','rain_sum','snowfall_sum',
+                  'wind_speed_10m_max','wind_gusts_10m_max','sunshine_duration','daylight_duration']
+
+          with open('env.csv','w',newline='') as f:
+              w = csv.writer(f)
+              w.writerow(['date','kp_max','kp_mean'] + cols)
+              for i, t in enumerate(d['time']):
+                  k = kp.get(t, ('',''))
+                  w.writerow([t, k[0], k[1]] + [d[c][i] if d[c][i] is not None else '' for c in cols])
+          print('env.csv written')
+          PYEOF
+      - name: Commit
+        run: |
+          git config user.name bot; git config user.email bot@kat
+          git add env.csv
+          git commit -m "env dataset: Kp + Sofia weather 2015-2025 [skip ci]" || true
+          git push
