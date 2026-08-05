@@ -4,7 +4,8 @@
 .ok{color:#4fd18b}.err{color:#ff5f6d}div{margin-bottom:10px;padding:10px;background:#12151c;border-radius:8px;}</style>
 </head><body>
 <h2>Диагностика на fetch()</h2>
-<div id="kp">Kp (kp.gfz.de): чакане…</div>
+<div id="kp">Kp директно (kp.gfz.de): чакане…</div>
+<div id="kpproxy">Kp през mvr-proxy /scrape: чакане…</div>
 <div id="wx">Open-Meteo: чакане…</div>
 <script>
 (async()=>{
@@ -13,11 +14,25 @@
     const r = await fetch('https://kp.gfz.de/app/json/?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z&index=Kp&status=def');
     if(!r.ok) throw new Error('HTTP '+r.status);
     const j = await r.json();
-    kpEl.textContent = 'Kp (kp.gfz.de): OK — ' + JSON.stringify(j.Kp);
+    kpEl.textContent = 'Kp директно: OK — ' + JSON.stringify(j.Kp);
     kpEl.className='ok';
   }catch(e){
-    kpEl.textContent = 'Kp (kp.gfz.de): ГРЕШКА — ' + e.message;
+    kpEl.textContent = 'Kp директно: ГРЕШКА (очаквано, GFZ няма CORS) — ' + e.message;
     kpEl.className='err';
+  }
+})();
+(async()=>{
+  const el = document.getElementById('kpproxy');
+  try{
+    const target = encodeURIComponent('https://kp.gfz.de/app/json/?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z&index=Kp&status=def');
+    const r = await fetch('https://mvr-proxy.mihov-emil.workers.dev/scrape?url=' + target);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    el.textContent = 'Kp през proxy: OK — ' + JSON.stringify(j.Kp);
+    el.className='ok';
+  }catch(e){
+    el.textContent = 'Kp през proxy: ГРЕШКА — ' + e.message;
+    el.className='err';
   }
 })();
 (async()=>{
