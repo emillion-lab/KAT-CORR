@@ -7,34 +7,32 @@
 <style>
   :root{
     --bg:#0b0d12; --panel:#12151c; --panel2:#171b24; --line:#232836;
-    --text:#e8ebf2; --muted:#8892a6; --accent:#5fb3ff; --accent2:#ff8a5b;
+    --text:#e8ebf2; --muted:#8892a6; --accent:#5fb3ff;
     --good:#4fd18b; --bad:#ff5f6d; --warn:#f5c451;
-    font-family:'JetBrains Mono',ui-monospace,Consolas,monospace;
   }
   *{box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  body{background:var(--bg);color:var(--text);margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
   header{padding:22px 20px 14px;border-bottom:1px solid var(--line);}
-  h1{font-size:19px;margin:0 0 4px;letter-spacing:.2px;}
+  h1{font-size:19px;margin:0 0 4px;}
   .sub{color:var(--muted);font-size:13px;}
   .wrap{max-width:1100px;margin:0 auto;padding:16px;}
   .status{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--muted);}
   .status.ok{color:var(--good);}
   .status.err{color:var(--bad);}
   progress{width:100%;height:6px;accent-color:var(--accent);margin-top:8px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;}
   .card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
   .card .val{font-size:22px;font-weight:600;}
   .bars{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px;}
-  .bars h2{font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
-  .bar-row{display:grid;grid-template-columns:150px 1fr 60px;align-items:center;gap:10px;margin-bottom:9px;font-size:13px;}
-  .bar-track{background:var(--panel2);border-radius:5px;height:16px;overflow:hidden;position:relative;}
+  .bars h2{font-size:13px;margin:0 0 12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;line-height:1.5;}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 76px;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;}
+  .bar-track{background:var(--panel2);border-radius:5px;height:16px;overflow:hidden;}
   .bar-fill{height:100%;border-radius:5px;}
-  .bar-val{text-align:right;color:var(--muted);font-size:12px;}
-  .note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5;}
-  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;}
-  input[type=text]{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;}
-  select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;}
+  .bar-val{text-align:right;color:var(--muted);font-size:11px;line-height:1.4;}
+  .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.55;}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  input[type=text],select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;}
   .tablewrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:600px;}
   table{border-collapse:collapse;width:100%;font-size:12.5px;}
   th{position:sticky;top:0;background:var(--panel2);text-align:right;padding:8px 10px;cursor:pointer;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap;}
@@ -46,56 +44,305 @@
   .risk-mid{color:var(--warn);}
   .risk-lo{color:var(--good);}
   footer{color:var(--muted);font-size:11px;text-align:center;padding:24px 0;}
-  a{color:var(--accent);}
 </style>
 </head>
 <body>
 <header>
-  <div class="wrap" style="padding:0;">
+  <div class="wrap" style="padding:0 16px;">
     <h1>KAT — Тежест на факторите върху ПТП (2015–2025)</h1>
-    <div class="sub">4018 дни национални данни (МВР) × Kp геомагнитен индекс (GFZ) × София ежедневно време (Open-Meteo). Тежестите се изчисляват статистически, не се задават ръчно.</div>
+    <div class="sub">4018 дни национални данни (МВР) × Kp геомагнитен индекс (GFZ) × София ежедневно време (Open-Meteo). Тежестите се изчисляват статистически.</div>
   </div>
 </header>
 <div class="wrap">
-  <div class="status" id="status">Зареждане на Kp и метео данни от GFZ и Open-Meteo…<progress id="prog" max="100" value="5"></progress></div>
+  <div class="status" id="status">Зареждане…<progress id="prog" max="100" value="5"></progress></div>
 
   <div class="grid" id="summaryCards" style="display:none;">
     <div class="card"><div class="lbl">Дни с пълни данни</div><div class="val" id="cN">–</div></div>
-    <div class="card"><div class="lbl">R² на комбинирания модел</div><div class="val" id="cR2">–</div></div>
-    <div class="card"><div class="lbl">Най-силен единичен фактор</div><div class="val" id="cTop" style="font-size:15px;">–</div></div>
+    <div class="card"><div class="lbl">R² на модела</div><div class="val" id="cR2">–</div></div>
+    <div class="card"><div class="lbl">Най-силен фактор</div><div class="val" id="cTop" style="font-size:15px;">–</div></div>
     <div class="card"><div class="lbl">Средно ПТП/ден</div><div class="val" id="cAvg">–</div></div>
   </div>
 
   <div class="bars" id="weightsPanel" style="display:none;">
-    <h2>Статистическа тежест на всеки фактор (стандартизирани коефициенти от множествена регресия върху остатъка след контрол по ден-от-седмицата и месец)</h2>
+    <h2>Тежест на всеки фактор — стандартизирани β коефициенти от множествена регресия върху остатъка след контрол по ден-от-седмицата и месец</h2>
     <div id="barsHost"></div>
-    <div class="note">Тежестта е абсолютната стойност на стандартизирания β-коефициент — колко стандартни отклонения се движи броят ПТП (остатък) при промяна на фактора с 1 стандартно отклонение, при равни други условия. Индивидуалният r (Pearson) е показан в скоби — суровата корелация без контрол за другите фактори.</div>
+    <div class="note">β = колко стандартни отклонения се движи броят ПТП при промяна на фактора с 1 стандартно отклонение, при равни други условия. r = суровата Pearson корелация без контрол за другите фактори. Червено = увеличава ПТП, синьо/зелено = намалява.</div>
   </div>
 
   <div class="controls" id="controls" style="display:none;">
-    <input type="text" id="filterYear" placeholder="Филтър по година, напр. 2023" style="width:220px;">
+    <input type="text" id="filterYear" placeholder="Филтър по година (напр. 2023)" style="width:220px;">
     <select id="sortSel">
       <option value="date">Сортирай по дата</option>
-      <option value="risk">Сортирай по риск (най-висок)</option>
+      <option value="risk">Сортирай по риск</option>
       <option value="total">Сортирай по брой ПТП</option>
     </select>
   </div>
 
   <div class="tablewrap" id="tableWrap" style="display:none;">
     <table id="tbl">
-      <thead>
-        <tr>
-          <th data-k="date">Дата</th><th data-k="total">ПТП</th><th data-k="killed">Загинали</th><th data-k="injured">Ранени</th>
-          <th data-k="kp">Kp макс</th><th data-k="dT">ΔT ден/ден (°C)</th><th data-k="dP">ΔНалягане (hPa)</th>
-          <th data-k="precip">Валеж (mm)</th><th data-k="snow">Сняг (cm)</th><th data-k="wind">Вятър макс (km/h)</th>
-          <th data-k="risk">Риск скор</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th data-k="date">Дата</th><th data-k="total">ПТП</th><th data-k="killed">Загинали</th><th data-k="injured">Ранени</th>
+        <th data-k="kp">Kp макс</th><th data-k="dT">ΔT (°C)</th><th data-k="dP">ΔP (hPa)</th>
+        <th data-k="precip">Валеж</th><th data-k="snow">Сняг</th><th data-k="wind">Вятър</th>
+        <th data-k="risk">Риск</th>
+      </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
 </div>
-<footer>KAT статистически модул · МВР справка №3286р-45638 · Kp: GFZ Potsdam (CC BY 4.0) · Метео: Open-Meteo</footer>
+<footer>МВР справка №3286р-45638 · Kp: GFZ Potsdam (CC BY 4.0) през mvr-proxy · Метео: Open-Meteo</footer>
 
 <script>
-const ACC_RAW = "2015-01-01,76,1,15;2015-01-02,74,1,5;2015-01-03,94,2,18;2015-01-04,69,2,8;2015-01-05,141,0,33;2015-01-06,126,0,9;2015-01-07,127,2,16;2015-01-08,123,0,13;2015-01-09,142,2,8;2015-01-10,160,2,18;2015-01-11,143,4,39;2015-01-12,221,2,43;2015-01-13,179,0,18;2015-01-14,152,1,39;2015-01-15,183,1,19;2015-01-16,168,2,26;2015-01-17,127,1,21;2015-01-18,115,3,15;2015-01-19,160,1,18;2015-01-20,147,1,27;2015-01-21,150,0,24;2015-01-22,141,2,18;2015-01-23,151,1,25;2015-01-24,133,6,32;2015-01-25,110,0,15;2015-01-26,102,1,17;2015-01-27,155,3,25;2015-01-28,112,1,12;2015-01-29,134,3,21;2015-01-30,131,2,25;2015-01-31,124,4,21;2015-02-01,117,6,23;2015-02-02,135,3,23;2015-02-03,133,2,25;2015-02-04,137,3,24;2015-02-05,143,0,25;2015-02-06,194,0,22;2015-02-07,126,2,17;2015-02-08,78,0,11;2015-02-09,176,1,22;2015-02-10,116,1,15;2015-02-11,138,1,26;2015-02-12,127,1,12;2015-02-13,172,1,24;2015-02-14,134,2,29;2015-02-15,111,1,15;2015-02-16,160,1,26;2015-02-17,136,1,15;2015-02-18,114,1,9;2015-02-19,107,2,11;2015-02-20,129,5,14;2015-02-21,137,0,27;2015-02-22,92,3,24;2015-02-23,151,2,22;2015-02-24,141,0,24;2015-02-25,174,2,26;2015-02-26,136,0,20;2015-02-27,139,0,23;2015-02-28,118,1,28;2015-03-01,92,2,16;2015-03-02,80,0,24;2015-03-03,104,0,18;2015-03-04,122,1,15;2015-03-05,192,4,21;2015-03-06,223,1,30;2015-03-07,182,5,24;2015-03-08,100,0,16;2015-03-09,128,1,12;2015-03-10,125,0,9;2015-03-11,121,0,17;2015-03-12,132,2,20;2015-03-13,122,1,24;2015-03-14,169,3,25;2015-03-15,81,2,13;2015-03-16,148,2,31;2015-03-17,147,1,13;2015-03-18,127,0,12;2015-03-19,169,2,17;2015-03-20,154,0,19;2015-03-21,111,0,14;2015-03-22,104,2,16;2015-03-23,113,2,16;2015-03-24,126,3,16;2015-03-25,134,1,11;2015-03-26,121,0,17;2015-03-27,166,1,21;2015-03-28,130,0,18;2015-03-29,82,7,16;2015-03-30,142,1,21;2015-03-31,127,0,16;2015-04-01,149,1,14;2015-04-02,135,1,15;2015-04-03,135,5,23;2015-04-04,123,5,27;2015-04-05,96,2,15;2015-04-06,171,1,18;2015-04-07,133,2,12;2015-04-08,135,1,17;2015-04-09,133,2,15;2015-04-10,140,0,28;2015-04-11,92,4,13;2015-04-12,100,1,36;2015-04-13,108,5,23;2015-04-14,156,2,29;2015-04-15,134,2,17;2015-04-16,154,0,26;2015-04-17,133,1,16;2015-04-18,124,3,22;2015-04-19,89,0,23;2015-04-20,156,2,21;2015-04-21,155,1,11;2015-04-22,161,1,33;2015-04-23,165,3,32;2015-04-24,153,1,19;2015-04-25,116,3,17;2015-04-26,102,4,14;2015-04-27,141,0,20;2015-04-28,151,6,18;2015-04-29,140,3,24;2015-04-30,159,2,26;2015-05-01,128,2,33;2015-05-02,114,2,33;2015-05-03,93,5,15;2015-05-04,128,3,20;2015-05-05,126,2,33;2015-05-06,96,1,13;2015-05-07,162,1,28;2015-05-08,113,1,14;2015-05-09,111,0,25;2015-05-10,120,7,29;2015-05-11,171,0,27;2015-05-12,132,3,19;2015-05-13,139,0,24;2015-05-14,144,3,33;2015-05-15,171,1,30;2015-05-16,109,3,25;2015-05-17,113,0,30;2015-05-18,167,2,22;2015-05-19,144,0,22;2015-05-20,134,2,26;2015-05-21,155,0,26;2015-05-22,155,4,38;2015-05-23,133,0,38;2015-05-24,105,1,27;2015-05-25,178,1,16;2015-05-26,168,0,32;2015-05-27,127,1,25;2015-05-28,118,0,13;2015-05-29,158,1,22;2015-05-30,143,5,34;2015-05-31,105,2,33;2015-06-01,156,1,33;2015-06-02,167,1,28;2015-06-03,149,2,23;2015-06-04,150,3,24;2015-06-05,199,4,26;2015-06-06,114,4,26;2015-06-07,106,4,23;2015-06-08,156,5,40;2015-06-09,142,1,16;2015-06-10,189,0,40;2015-06-11,152,3,30;2015-06-12,162,3,39;2015-06-13,121,3,22;2015-06-14,103,2,26;2015-06-15,128,1,22;2015-06-16,136,2,23;2015-06-17,125,0,20;2015-06-18,202,4,39;2015-06-19,132,1,21;2015-06-20,129,3,22;2015-06-21,148,1,25;2015-06-22,129,1,22;2015-06-23,122,5,26;2015-06-24,150,1,35;2015-06-25,112,0,23;2015-06-26,174,2,31;2015-06-27,104,2,28;2015-06-28,116,4,35;2015-06-29,162,1,34;2015-06-30,152,0,21;PLACEHOLDER_REST
+const START = '2015-01-01', END = '2025-12-31';
+const PROXY = 'https://mvr-proxy.mihov-emil.workers.dev/scrape?url=';
+const statusEl = document.getElementById('status');
+const progEl = document.getElementById('prog');
+
+function setStatus(msg, cls, pct){
+  statusEl.textContent = msg;
+  statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  if(pct !== undefined){
+    if(!statusEl.contains(progEl)) statusEl.appendChild(progEl);
+    progEl.value = pct;
+  } else if(statusEl.contains(progEl)) statusEl.removeChild(progEl);
+}
+
+function addDays(iso, n){
+  const d = new Date(iso + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0,10);
+}
+
+async function loadAccidents(){
+  const [p1, p2] = await Promise.all([
+    fetch('data1.txt').then(r => r.text()),
+    fetch('data2.txt').then(r => r.text())
+  ]);
+  const rows = (p1.trim() + ';' + p2.trim()).split(';');
+  const map = {};
+  rows.forEach((r, i) => {
+    if(!r) return;
+    const p = r.split(',');
+    map[addDays(START, i)] = { total:+p[0], killed:+p[1], injured:+p[2] };
+  });
+  return map;
+}
+
+async function fetchKp(){
+  const target = 'https://kp.gfz.de/app/json/?start=' + START + 'T00:00:00Z&end=' + END + 'T21:00:00Z&index=Kp&status=def';
+  const r = await fetch(PROXY + encodeURIComponent(target));
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  const daily = {};
+  for(let i = 0; i < j.datetime.length; i++){
+    const d = j.datetime[i].slice(0,10);
+    const v = j.Kp[i];
+    if(v == null || v < 0) continue;
+    if(!daily[d]) daily[d] = { max:-1, sum:0, n:0 };
+    daily[d].max = Math.max(daily[d].max, v);
+    daily[d].sum += v; daily[d].n++;
+  }
+  const out = {};
+  for(const d in daily) out[d] = { kpMax: daily[d].max, kpMean: daily[d].sum / daily[d].n };
+  return out;
+}
+
+async function fetchWeather(){
+  const url = 'https://archive-api.open-meteo.com/v1/archive?latitude=42.6975&longitude=23.3242&start_date=' + START + '&end_date=' + END + '&daily=temperature_2m_max,temperature_2m_min,surface_pressure_mean,precipitation_sum,snowfall_sum,wind_speed_10m_max&timezone=Europe%2FSofia';
+  const r = await fetch(url);
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  const out = {}, d = j.daily;
+  for(let i = 0; i < d.time.length; i++){
+    out[d.time[i]] = {
+      tMax: d.temperature_2m_max[i], tMin: d.temperature_2m_min[i],
+      press: d.surface_pressure_mean[i], precip: d.precipitation_sum[i],
+      snow: d.snowfall_sum[i], wind: d.wind_speed_10m_max[i]
+    };
+  }
+  return out;
+}
+
+const mean = a => a.reduce((s,x) => s+x, 0) / a.length;
+const std = (a,m) => Math.sqrt(mean(a.map(x => (x-m)*(x-m))));
+
+function pearson(x, y){
+  const mx = mean(x), my = mean(y);
+  let num = 0, dx = 0, dy = 0;
+  for(let i = 0; i < x.length; i++){
+    num += (x[i]-mx)*(y[i]-my); dx += (x[i]-mx)**2; dy += (y[i]-my)**2;
+  }
+  return (dx === 0 || dy === 0) ? 0 : num / Math.sqrt(dx*dy);
+}
+
+function solveOLS(X, y){
+  const n = X.length, p = X[0].length;
+  const XtX = Array.from({length:p}, () => new Array(p).fill(0));
+  const Xty = new Array(p).fill(0);
+  for(let i = 0; i < n; i++){
+    for(let a = 0; a < p; a++){
+      Xty[a] += X[i][a]*y[i];
+      for(let b = 0; b < p; b++) XtX[a][b] += X[i][a]*X[i][b];
+    }
+  }
+  const A = XtX.map((row,i) => [...row, Xty[i]]);
+  for(let col = 0; col < p; col++){
+    let piv = col;
+    for(let r = col+1; r < p; r++) if(Math.abs(A[r][col]) > Math.abs(A[piv][col])) piv = r;
+    [A[col], A[piv]] = [A[piv], A[col]];
+    if(Math.abs(A[col][col]) < 1e-10) continue;
+    for(let r = 0; r < p; r++){
+      if(r === col) continue;
+      const f = A[r][col] / A[col][col];
+      for(let c = col; c <= p; c++) A[r][c] -= f*A[col][c];
+    }
+  }
+  const beta = new Array(p).fill(0);
+  for(let i = 0; i < p; i++) beta[i] = Math.abs(A[i][i]) < 1e-10 ? 0 : A[i][p]/A[i][i];
+  return beta;
+}
+
+const fmt = (x, d=2) => (x == null || isNaN(x)) ? '–' : x.toFixed(d);
+
+async function main(){
+  let accMap, kp, wx;
+  try{
+    setStatus('Зареждане на данните за ПТП…', '', 15);
+    accMap = await loadAccidents();
+  }catch(e){ return setStatus('Грешка при данните за ПТП: ' + e.message, 'err'); }
+
+  try{
+    setStatus('Изтегляне на Kp индекс (GFZ през mvr-proxy)…', '', 40);
+    kp = await fetchKp();
+  }catch(e){ return setStatus('Грешка при Kp: ' + e.message, 'err'); }
+
+  try{
+    setStatus('Изтегляне на метео данни за София…', '', 70);
+    wx = await fetchWeather();
+  }catch(e){ return setStatus('Грешка при метео: ' + e.message, 'err'); }
+
+  setStatus('Статистически анализ…', '', 88);
+
+  const dates = Object.keys(accMap).sort();
+  const rows = [];
+  let prevT = null, prevP = null;
+  for(const d of dates){
+    const acc = accMap[d], k = kp[d], w = wx[d];
+    if(!k || !w || w.tMax == null || w.tMin == null){ prevT = null; prevP = null; continue; }
+    const tMean = (w.tMax + w.tMin) / 2;
+    const dT = prevT === null ? null : tMean - prevT;
+    const dP = (prevP === null || w.press == null) ? null : w.press - prevP;
+    rows.push({
+      date:d, total:acc.total, killed:acc.killed, injured:acc.injured,
+      kp:k.kpMax, dT, dP, precip:w.precip||0, snow:w.snow||0, wind:w.wind||0,
+      weekday:new Date(d+'T12:00:00').getDay(), month:+d.slice(5,7)
+    });
+    prevT = tMean; prevP = w.press;
+  }
+  const full = rows.filter(r => r.dT !== null && r.dP !== null);
+  if(!full.length) return setStatus('Няма припокриващи се дни между източниците.', 'err');
+
+  const grand = mean(full.map(r => r.total));
+  const wdM = {}, moM = {};
+  for(let i = 0; i < 7; i++){ const s = full.filter(r => r.weekday===i).map(r=>r.total); wdM[i] = s.length ? mean(s) : grand; }
+  for(let i = 1; i <= 12; i++){ const s = full.filter(r => r.month===i).map(r=>r.total); moM[i] = s.length ? mean(s) : grand; }
+  full.forEach(r => { r.residual = r.total - wdM[r.weekday] - moM[r.month] + grand; });
+
+  const yArr = full.map(r => r.residual);
+  const factors = [
+    {key:'kp', label:'Kp (магнитни бури)'},
+    {key:'dT', label:'ΔT ден/ден'},
+    {key:'dP', label:'Δ налягане'},
+    {key:'precip', label:'Валеж'},
+    {key:'snow', label:'Снеговалеж'},
+    {key:'wind', label:'Вятър (макс)'}
+  ];
+
+  const indivR = {}, zCols = [];
+  factors.forEach(f => {
+    const arr = full.map(r => r[f.key]);
+    indivR[f.key] = pearson(arr, yArr);
+    const m = mean(arr), s = std(arr, m) || 1;
+    zCols.push(arr.map(v => (v-m)/s));
+  });
+  const ym = mean(yArr), ys = std(yArr, ym) || 1;
+  const yz = yArr.map(v => (v-ym)/ys);
+
+  const X = full.map((_, i) => [1, ...zCols.map(c => c[i])]);
+  const beta = solveOLS(X, yz);
+  const weights = {};
+  factors.forEach((f, i) => { weights[f.key] = beta[i+1]; });
+
+  const yPred = X.map(row => row.reduce((s,v,i) => s + v*beta[i], 0));
+  const ssRes = yz.reduce((s,v,i) => s + (v-yPred[i])**2, 0);
+  const ssTot = yz.reduce((s,v) => s + (v-mean(yz))**2, 0);
+  const r2 = 1 - ssRes/ssTot;
+
+  full.forEach((r, i) => {
+    let sc = 0;
+    factors.forEach((f, fi) => { sc += weights[f.key]*zCols[fi][i]; });
+    r.risk = sc;
+  });
+
+  document.getElementById('cN').textContent = full.length;
+  document.getElementById('cR2').textContent = (r2*100).toFixed(1) + '%';
+  const top = factors.slice().sort((a,b) => Math.abs(weights[b.key]) - Math.abs(weights[a.key]))[0];
+  document.getElementById('cTop').textContent = top.label;
+  document.getElementById('cAvg').textContent = mean(full.map(r => r.total)).toFixed(1);
+  document.getElementById('summaryCards').style.display = '';
+
+  const maxAbs = Math.max(...factors.map(f => Math.abs(weights[f.key])));
+  const host = document.getElementById('barsHost');
+  factors.slice().sort((a,b) => Math.abs(weights[b.key]) - Math.abs(weights[a.key])).forEach(f => {
+    const w = weights[f.key];
+    const pct = maxAbs ? Math.abs(w)/maxAbs*100 : 0;
+    const color = w >= 0 ? 'linear-gradient(90deg,#ff8a5b,#ff5f6d)' : 'linear-gradient(90deg,#5fb3ff,#4fd18b)';
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = '<div>' + f.label + '</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
+      '<div class="bar-val">β=' + fmt(w,3) + '<br>r=' + fmt(indivR[f.key],3) + '</div>';
+    host.appendChild(row);
+  });
+  document.getElementById('weightsPanel').style.display = '';
+  document.getElementById('controls').style.display = '';
+  document.getElementById('tableWrap').style.display = '';
+  setStatus('Готово — ' + full.length + ' дни анализирани. Комбинираният модел обяснява ' + (r2*100).toFixed(1) + '% от дисперсията на остатъка.', 'ok');
+
+  let sortKey = 'date', sortDir = 1, yearFilter = '';
+  const tbody = document.getElementById('tbody');
+  const riskClass = v => v > 1 ? 'risk-hi' : v > 0.3 ? 'risk-mid' : v < -0.3 ? 'risk-lo' : '';
+
+  function render(){
+    let data = yearFilter ? full.filter(r => r.date.startsWith(yearFilter)) : full;
+    data = data.slice();
+    if(sortKey === 'date') data.sort((a,b) => sortDir * (a.date < b.date ? -1 : 1));
+    else data.sort((a,b) => sortDir * ((b[sortKey]||0) - (a[sortKey]||0)));
+    tbody.innerHTML = data.slice(0,1500).map(r =>
+      '<tr><td>' + r.date + '</td><td>' + r.total + '</td><td>' + r.killed + '</td><td>' + r.injured + '</td>' +
+      '<td>' + fmt(r.kp,1) + '</td><td>' + fmt(r.dT,1) + '</td><td>' + fmt(r.dP,1) + '</td>' +
+      '<td>' + fmt(r.precip,1) + '</td><td>' + fmt(r.snow,1) + '</td><td>' + fmt(r.wind,0) + '</td>' +
+      '<td class="' + riskClass(r.risk) + '">' + fmt(r.risk,2) + '</td></tr>'
+    ).join('');
+  }
+
+  document.querySelectorAll('#tbl th').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.k;
+      if(sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = k === 'date' ? 1 : 1; }
+      render();
+    });
+  });
+  document.getElementById('sortSel').addEventListener('change', e => {
+    sortKey = e.target.value; sortDir = 1; render();
+  });
+  document.getElementById('filterYear').addEventListener('input', e => {
+    yearFilter = e.target.value.trim(); render();
+  });
+  render();
+}
+
+main();
+</script>
+</body>
+</html>
