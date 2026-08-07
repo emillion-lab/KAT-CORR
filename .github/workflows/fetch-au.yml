@@ -1,0 +1,66 @@
+name: fetch-au
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/fetch-au.yml']
+permissions:
+  contents: write
+jobs:
+  au:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch BITRE fatal crashes and summarise in one pass
+        continue-on-error: true
+        run: |
+          python3 - > au.log 2>&1 <<'EOF'
+          import urllib.request, io, csv, datetime, collections
+          U=["https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes_dec2024.csv",
+             "https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes_jun2024.csv",
+             "https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes.csv"]
+          raw=None
+          for u in U:
+              try:
+                  raw=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=300).read()
+                  print("OK",u,len(raw)); break
+              except Exception as e: print("fail",u,e)
+          if raw is None: raise SystemExit("no source")
+          rdr=csv.DictReader(io.StringIO(raw.decode('utf-8','replace')))
+          fn={c.strip().lower():c for c in rdr.fieldnames}
+          print("cols:",list(fn)[:14])
+          ycol=fn.get('year'); mcol=fn.get('month'); dcol=fn.get('dayweek') or fn.get('day of week')
+          daycol=next((fn[k] for k in fn if k in ('day','dayofmonth','day_of_month')),None)
+          print("day-of-month col:",daycol)
+          cnt=collections.Counter(); mon=collections.Counter()
+          for r in rdr:
+              try: y=int(r[ycol]); m=int(r[mcol])
+              except: continue
+              if y<2015: continue
+              mon[m]+=1
+              if daycol:
+                  try: cnt[datetime.date(y,m,int(r[daycol])).isoformat()]+=1
+                  except: pass
+          tot=sum(mon.values())
+          print("\nfatal crashes 2015+:",tot)
+          print("\nMONTHLY SHARE (x100 = index vs even 8.33%):")
+          for m in range(1,13):
+              print("  m%02d  %5d  %5.2f%%"%(m,mon[m],mon[m]/tot*100))
+          if cnt:
+              rows=sorted(cnt.items())
+              print("\ndaily rows:",len(rows),rows[0][0],"..",rows[-1][0])
+              with open('au_daily.csv','w',newline='') as f:
+                  w=csv.writer(f); w.writerow(['date','fatal_crashes']); w.writerows(rows)
+              print("au_daily.csv written")
+          else:
+              print("NO day-of-month -> daily/pulse test impossible for AU")
+          EOF
+      - run: cat au.log || true
+        if: always()
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name bot; git config user.email bot@kat
+          git add -A; git commit -m "AU fatal crashes probe [skip ci]" || true
+          git fetch origin main && git rebase origin/main || true
+          git push
