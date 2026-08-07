@@ -1,0 +1,18 @@
+=== GERMANY: probing Unfallatlas for day-of-month ===
+trying https://www.opengeodata.nrw.de/produkte/transport_verkehr/unfallatlas/Unfallorte2023_EPSG25832_CSV.zip
+  got 12702950 bytes
+  csv members: ['csv/Unfallorte2023_LinRef.csv']
+  columns: ['\ufeffOID_', 'UIDENTSTLAE', 'ULAND', 'UREGBEZ', 'UKREIS', 'UGEMEINDE', 'UJAHR', 'UMONAT', 'USTUNDE', 'UWOCHENTAG', 'UKATEGORIE', 'UART', 'UTYP1', 'ULICHTVERH', 'IstStrassenzustand', 'IstRad', 'IstPKW', 'IstFuss', 'IstKrad', 'IstGkfz', 'IstSonstige', 'LINREFX', 'LINREFY', 'XGCSWGS84', 'YGCSWGS84', 'PLST']
+  DAY-OF-MONTH PRESENT: False
+  -> Germany unusable for daily analysis (privacy aggregation)
+
+=== US FARS: fatal crashes with exact dates ===
+  FARS 2019: 33487 fatal crashes
+  FARS 2020: 35935 fatal crashes
+  FARS 2021: 39785 fatal crashes
+  FARS 2022: 39422 fatal crashes
+  FARS 2023: 37769 fatal crashes
+  US: 1826 days, 2019-01-01 .. 2023-12-31
+  US weather rows: 1826
+
+SUMMARY: germany_daily_usable=False  us_fars=True
