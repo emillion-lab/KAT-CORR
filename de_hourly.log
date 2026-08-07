@@ -1,0 +1,8 @@
+fetching 2023
+  rows: 269048 cells: 2016
+fetching 2022
+  failed: IncompleteRead(567720 bytes read, 12735698 more expected)
+fetching 2021
+  failed: 
+de_hourly.csv written: 2016 cells
+total crashes: 269048
