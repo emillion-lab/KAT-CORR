@@ -1,0 +1,32 @@
+name: fetch-de-us
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/fetch_de_us.py'
+      - '.github/workflows/fetch-de-us.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe Germany + fetch US FARS
+        continue-on-error: true
+        run: python3 scripts/fetch_de_us.py > de_us.log 2>&1 || echo "NONZERO" >> de_us.log
+      - name: Show log
+        if: always()
+        run: cat de_us.log || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name bot
+          git config user.email bot@kat
+          git add -A
+          git commit -m "DE probe + US FARS fetch [skip ci]" || true
+          git fetch origin main && git rebase origin/main || true
+          git push
