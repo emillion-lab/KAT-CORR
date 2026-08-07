@@ -1,0 +1,46 @@
+name: fetch-more-countries
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/fetch_more.py'
+      - '.github/workflows/fetch-more.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Discover French BAAC resource URLs from data.gouv API
+        continue-on-error: true
+        run: |
+          echo "== data.gouv BAAC resources ==" > more.log
+          curl -s --max-time 120 "https://www.data.gouv.fr/api/1/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2023/" \
+            | python3 -c "
+import json,sys
+try:
+    d=json.load(sys.stdin)
+except Exception as e:
+    print('json fail',e); raise SystemExit
+for r in d.get('resources',[]):
+    t=(r.get('title') or '').lower()
+    if 'caract' in t:
+        print(r.get('title'),'|',r.get('url'))
+" >> more.log 2>&1 || echo "discovery failed" >> more.log
+      - name: Run fetcher
+        continue-on-error: true
+        run: |
+          echo "" >> more.log
+          echo "== fetcher ==" >> more.log
+          python3 scripts/fetch_more.py >> more.log 2>&1 || echo "NONZERO" >> more.log
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name bot; git config user.email bot@kat
+          git add -A
+          git commit -m "multi-country fetch attempt [skip ci]" || true
+          git pull --rebase || true
+          git push
