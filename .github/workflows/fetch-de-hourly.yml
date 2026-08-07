@@ -1,0 +1,32 @@
+name: fetch-de-hourly
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/fetch_de_hourly.py'
+      - '.github/workflows/fetch-de-hourly.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract German hourly profile
+        continue-on-error: true
+        run: python3 scripts/fetch_de_hourly.py > de_hourly.log 2>&1 || echo NONZERO >> de_hourly.log
+      - name: Show log
+        if: always()
+        run: cat de_hourly.log || true
+      - name: Commit
+        if: always()
+        run: |
+          git config user.name bot
+          git config user.email bot@kat
+          git add -A
+          git commit -m "German hourly crash profile [skip ci]" || true
+          git fetch origin main && git rebase origin/main || true
+          git push
