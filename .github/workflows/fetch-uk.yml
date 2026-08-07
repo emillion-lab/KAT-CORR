@@ -1,0 +1,27 @@
+name: fetch-uk-data
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/fetch_uk.py'
+      - '.github/workflows/fetch-uk.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch UK STATS19 + London weather
+        run: python3 scripts/fetch_uk.py 2> fetch-uk.log || (cat fetch-uk.log; exit 1)
+      - name: Show log
+        if: always()
+        run: cat fetch-uk.log || true
+      - name: Commit
+        run: |
+          git config user.name bot; git config user.email bot@kat
+          git add uk_accidents_daily.csv uk_env.csv fetch-uk.log || true
+          git commit -m "UK STATS19 + London weather for replication test [skip ci]" || true
+          git push
