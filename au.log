@@ -1,0 +1,4 @@
+fail https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes_dec2024.csv Remote end closed connection without response
+fail https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes_jun2024.csv Remote end closed connection without response
+fail https://www.bitre.gov.au/sites/default/files/documents/bitre_fatal_crashes.csv Remote end closed connection without response
+no source
