@@ -1,0 +1,26 @@
+name: uk-local-pressure
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deps
+        run: pip install numpy
+      - name: Local pressure test
+        continue-on-error: true
+        run: python3 scripts/uk_local_pressure.py > uk-local.log 2>&1 || echo "SCRIPT EXITED NONZERO" >> uk-local.log
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name bot; git config user.email bot@kat
+          git add -A results uk-local.log || true
+          git commit -m "UK local pressure test [skip ci]" || true
+          git pull --rebase || true
+          git push
