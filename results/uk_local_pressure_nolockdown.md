@@ -1,20 +1,3 @@
-STATS19…
-  95380 KB за 6s ← https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-statistics-
-дни 2021-01-01..2025-12-31; райони: ['1', '20', '99', '13', '46', '44', '47', '43', '42', '50']
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.510&longitude=-0.112&s
-  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=52.489&longitude=-1.916&s
-  108 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=55.923&longitude=-3.817&s
-  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=53.776&longitude=-1.651&s
-  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.318&longitude=0.556&st
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.913&longitude=-1.201&s
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.853&longitude=-0.153&s
-  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.621&longitude=-0.881&s
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.699&longitude=0.518&st
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.464&longitude=-4.124&s
-  опит 1 (180s): <urlopen error _ssl.c:983: The handshake operation timed out>
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.541&longitude=-1.084&s
-/home/runner/work/KAT-CORR/KAT-CORR/scripts/uk_local_pressure.py:143: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  f'Генерирано: {D.datetime.utcnow():%Y-%m-%d %H:%M} UTC. Откриване 07.2021–2023 (без локдауна 01–06.2021), проверка 2024–25.',
 # Налягане — локален тест (STATS19, 2021-01-01..2025-12-31)
 
 Генерирано: 2026-10-02 04:45 UTC. Откриване 07.2021–2023 (без локдауна 01–06.2021), проверка 2024–25.
