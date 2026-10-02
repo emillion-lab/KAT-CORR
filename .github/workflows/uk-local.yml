@@ -8,14 +8,16 @@ permissions:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - name: Deps
         run: pip install numpy
       - name: Local pressure test
+        # таймаут на стъпката, не на целия job — иначе логът не се записва
+        timeout-minutes: 30
         continue-on-error: true
-        run: python3 scripts/uk_local_pressure.py > uk-local.log 2>&1 || echo "SCRIPT EXITED NONZERO" >> uk-local.log
+        run: python3 -u scripts/uk_local_pressure.py > uk-local.log 2>&1 || echo "SCRIPT EXITED NONZERO" >> uk-local.log
       - name: Commit results
         if: always()
         run: |
