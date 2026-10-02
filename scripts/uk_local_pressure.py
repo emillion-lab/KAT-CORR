@@ -28,7 +28,7 @@ NAMES = {'1':'Лондон (Met)','4':'Ланкашър','5':'Мърсисайд
          '43':'Темза Вали','44':'Хампшър','46':'Кент','47':'Съсекс',
          '50':'Девън и Корнуол','52':'Ейвън и Съмърсет'}
 
-def fetch(url, tries=3):
+def fetch(url, tries=4):
     # User-Agent като браузър: DfT държи висящи заявки с непознат UA
     # (fetch_uk.py със същия файл минава с 'Mozilla/5.0').
     for i in range(tries):
@@ -40,7 +40,9 @@ def fetch(url, tries=3):
             print(f'  {len(b)//1024} KB за {time.time()-t0:.0f}s ← {url[:80]}', flush=True)
             return b
         except Exception as e:
-            print(f'  опит {i+1} ({time.time()-t0:.0f}s): {e}', flush=True); time.sleep(10 * (i + 1))
+            print(f'  опит {i+1} ({time.time()-t0:.0f}s): {e}', flush=True)
+            # 429 от Open-Meteo е минутен лимит по тежест на заявката — изчакай цяла минута
+            time.sleep(65 if '429' in str(e) else 10 * (i + 1))
     raise SystemExit('свалянето пропадна: ' + url)
 
 def pdate(s):
@@ -84,7 +86,7 @@ def weather(lat, lon):
             for i, t in enumerate(dd['time'])}
 W = {}
 for pf in forces:
-    W[pf] = weather(*centre[pf]); time.sleep(2)
+    W[pf] = weather(*centre[pf]); time.sleep(15)   # 5 г. × 8 променливи е тежка заявка
 WN = weather(*national)
 
 # ---------- анализ ----------
