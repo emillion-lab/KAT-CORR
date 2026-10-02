@@ -25,14 +25,19 @@ NAMES = {'1':'Лондон (Met)','4':'Ланкашър','5':'Мърсисайд
          '43':'Темза Вали','44':'Хампшър','46':'Кент','47':'Съсекс',
          '50':'Девън и Корнуол','52':'Ейвън и Съмърсет'}
 
-def fetch(url, tries=5):
+def fetch(url, tries=3):
+    # User-Agent като браузър: DfT държи висящи заявки с непознат UA
+    # (fetch_uk.py със същия файл минава с 'Mozilla/5.0').
     for i in range(tries):
+        t0 = time.time()
         try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'KAT-CORR'})
-            with urllib.request.urlopen(req, timeout=600) as r:
-                return r.read()
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                b = r.read()
+            print(f'  {len(b)//1024} KB за {time.time()-t0:.0f}s ← {url[:80]}', flush=True)
+            return b
         except Exception as e:
-            print(f'  опит {i+1}: {e}', flush=True); time.sleep(15 * (i + 1))
+            print(f'  опит {i+1} ({time.time()-t0:.0f}s): {e}', flush=True); time.sleep(10 * (i + 1))
     raise SystemExit('свалянето пропадна: ' + url)
 
 def pdate(s):
