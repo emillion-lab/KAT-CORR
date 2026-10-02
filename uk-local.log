@@ -1,71 +1,19 @@
 STATS19…
-  95380 KB за 11s ← https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-statistics-
+  95380 KB за 5s ← https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-statistics-
 дни 2021-01-01..2025-12-31; райони: ['1', '20', '99', '13', '46', '44', '47', '43', '42', '50']
-  110 KB за 2s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.510&longitude=-0.112&s
+  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.510&longitude=-0.112&s
   109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=52.489&longitude=-1.916&s
   108 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=55.923&longitude=-3.817&s
   опит 1 (180s): <urlopen error _ssl.c:983: The handshake operation timed out>
-  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=53.776&longitude=-1.651&s
-  109 KB за 2s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.318&longitude=0.556&st
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.913&longitude=-1.201&s
-  опит 1 (180s): <urlopen error _ssl.c:983: The handshake operation timed out>
+  109 KB за 2s ← https://archive-api.open-meteo.com/v1/archive?latitude=53.776&longitude=-1.651&s
+  109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.318&longitude=0.556&st
+  110 KB за 2s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.913&longitude=-1.201&s
   110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.853&longitude=-0.153&s
   109 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.621&longitude=-0.881&s
   110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.699&longitude=0.518&st
-  опит 1 (180s): <urlopen error _ssl.c:983: The handshake operation timed out>
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.464&longitude=-4.124&s
-  110 KB за 1s ← https://archive-api.open-meteo.com/v1/archive?latitude=51.541&longitude=-1.084&s
-/home/runner/work/KAT-CORR/KAT-CORR/scripts/uk_local_pressure.py:138: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-  f'Генерирано: {D.datetime.utcnow():%Y-%m-%d %H:%M} UTC. Откриване 2021–23, проверка 2024–25.',
-# Налягане — локален тест (STATS19, 2021-01-01..2025-12-31)
-
-Генерирано: 2026-10-02 04:16 UTC. Откриване 2021–23, проверка 2024–25.
-Ефект = отклонение от обичайното след контрол за година, ден, месец, дъжд, сняг, слънце, мраз, вятър.
-Ако хипотезата е вярна: ЛОКАЛНО има ефект, ОБЩА ТОЧКА — по-слаб или никакъв.
-
-## катастрофи — ЛОКАЛНО (всеки район със своето налягане)
-| Δ налягане (hPa) | 2021–23 | 2024–25 | повтаря ли се |
-|---|---|---|---|
-| спад >8 | +0.1% ±1.2 (n=933) | +6.0% ±1.5 (n=705) |  |
-| спад 5–8 | -0.3% ±1.1 (n=1165) | +0.9% ±1.5 (n=626) |  |
-| стабилно | +0.4% ±0.4 (n=6829) | -1.3% ±0.6 (n=4488) |  |
-| ръст >5 | -1.4% ±0.8 (n=2013) | +0.9% ±1.0 (n=1491) |  |
-
-## катастрофи — ОБЩА ТОЧКА (51.54, -1.08) за всички
-| Δ налягане (hPa) | 2021–23 | 2024–25 | повтаря ли се |
-|---|---|---|---|
-| спад >8 | -0.6% ±1.3 (n=890) | +4.8% ±1.5 (n=710) |  |
-| спад 5–8 | -0.2% ±1.0 (n=1210) | +1.4% ±1.5 (n=590) |  |
-| стабилно | +0.3% ±0.4 (n=6880) | -1.3% ±0.6 (n=4540) |  |
-| ръст >5 | -0.7% ±0.9 (n=1960) | +1.2% ±1.0 (n=1470) |  |
-
-## пострадали — ЛОКАЛНО (всеки район със своето налягане)
-| Δ налягане (hPa) | 2021–23 | 2024–25 | повтаря ли се |
-|---|---|---|---|
-| спад >8 | -0.1% ±1.4 (n=933) | +5.9% ±1.7 (n=705) |  |
-| спад 5–8 | +0.3% ±1.2 (n=1165) | +0.8% ±1.8 (n=626) |  |
-| стабилно | +0.4% ±0.5 (n=6829) | -1.3% ±0.6 (n=4488) |  |
-| ръст >5 | -1.4% ±0.9 (n=2013) | +0.9% ±1.1 (n=1491) |  |
-
-## пострадали — ОБЩА ТОЧКА (51.54, -1.08) за всички
-| Δ налягане (hPa) | 2021–23 | 2024–25 | повтаря ли се |
-|---|---|---|---|
-| спад >8 | -0.3% ±1.5 (n=890) | +4.7% ±1.7 (n=710) |  |
-| спад 5–8 | +0.1% ±1.2 (n=1210) | +0.5% ±1.7 (n=590) |  |
-| стабилно | +0.3% ±0.5 (n=6880) | -1.1% ±0.6 (n=4540) |  |
-| ръст >5 | -0.8% ±0.9 (n=1960) | +1.1% ±1.1 (n=1470) |  |
-
-## По райони — катастрофи, „спад >5" спрямо стабилно, локално
-
-| район | център | 2021–23 | 2024–25 |
-|---|---|---|---|
-| Лондон (Met) | 51.51, -0.11 | +0.3% ±1.3 | +4.3% ±1.6 |
-| Уест Мидландс | 52.49, -1.92 | +0.4% ±2.1 | +2.5% ±2.8 |
-| 99 | 55.92, -3.82 | -2.0% ±2.3 | -2.9% ±2.8 |
-| Западен Йоркшър | 53.78, -1.65 | -3.0% ±2.4 | +10.3% ±3.2 |
-| Кент | 51.32, 0.56 | +3.1% ±2.7 | -0.8% ±3.5 |
-| Хампшър | 50.91, -1.20 | +1.0% ±2.9 | +4.0% ±4.1 |
-| Съсекс | 50.85, -0.15 | +1.0% ±2.9 | +3.5% ±3.4 |
-| Темза Вали | 51.62, -0.88 | -0.4% ±2.9 | +4.6% ±4.4 |
-| 42 | 51.70, 0.52 | +1.4% ±2.6 | +4.5% ±3.7 |
-| Девън и Корнуол | 50.46, -4.12 | -2.3% ±3.1 | +5.0% ±3.2 |
+  110 KB за 2s ← https://archive-api.open-meteo.com/v1/archive?latitude=50.464&longitude=-4.124&s
+  опит 1 (1s): HTTP Error 429: Too Many Requests
+  опит 2 (0s): HTTP Error 429: Too Many Requests
+  опит 3 (1s): HTTP Error 429: Too Many Requests
+свалянето пропадна: https://archive-api.open-meteo.com/v1/archive?latitude=51.541&longitude=-1.084&start_date=2021-01-01&end_date=2025-12-31&daily=surface_pressure_mean,precipitation_sum,snowfall_sum,temperature_2m_min,temperature_2m_max,wind_speed_10m_max,sunshine_duration,daylight_duration&timezone=Europe%2FLondon
+SCRIPT EXITED NONZERO
