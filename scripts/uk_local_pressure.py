@@ -17,7 +17,10 @@ URL = 'https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-stat
 TOP = 10
 DISC = lambda d: d.year <= 2023
 VAL  = lambda d: d.year >= 2024
-OUT  = 'results/uk_local_pressure.md'
+# Британският локдаун (01–06.2021) сваля катастрофите с ~28% точно в бурния сезон,
+# а годишната фиктивна го размазва — изключва се изцяло.
+SKIP = lambda d: D.date(2021, 1, 1) <= d <= D.date(2021, 6, 30)
+OUT  = 'results/uk_local_pressure_nolockdown.md'
 DAILY = ('surface_pressure_mean,precipitation_sum,snowfall_sum,temperature_2m_min,'
          'temperature_2m_max,wind_speed_10m_max,sunshine_duration,daylight_duration')
 NAMES = {'1':'Лондон (Met)','4':'Ланкашър','5':'Мърсисайд','6':'Голям Манчестър',
@@ -106,7 +109,7 @@ def residuals(pf, Wx, series):
     d = dmin + D.timedelta(days=1)
     while d <= dmax:
         w, w0 = Wx.get(d), Wx.get(d - D.timedelta(days=1))
-        if w and w0 and w.get('surface_pressure_mean') is not None and w0.get('surface_pressure_mean') is not None:
+        if w and w0 and not SKIP(d) and w.get('surface_pressure_mean') is not None and w0.get('surface_pressure_mean') is not None:
             rows.append((d, feats(d, w), math.log(series[pf].get(d, 0) + 0.5),
                          w['surface_pressure_mean'] - w0['surface_pressure_mean']))
         d += D.timedelta(days=1)
@@ -135,7 +138,7 @@ def table(rows):
     return '\n'.join(out)
 
 md = [f'# Налягане — локален тест (STATS19, {dmin}..{dmax})', '',
-      f'Генерирано: {D.datetime.utcnow():%Y-%m-%d %H:%M} UTC. Откриване 2021–23, проверка 2024–25.',
+      f'Генерирано: {D.datetime.utcnow():%Y-%m-%d %H:%M} UTC. Откриване 07.2021–2023 (без локдауна 01–06.2021), проверка 2024–25.',
       'Ефект = отклонение от обичайното след контрол за година, ден, месец, дъжд, сняг, слънце, мраз, вятър.',
       'Ако хипотезата е вярна: ЛОКАЛНО има ефект, ОБЩА ТОЧКА — по-слаб или никакъв.', '']
 for label, series in (('катастрофи', cnt), ('пострадали', cas)):
